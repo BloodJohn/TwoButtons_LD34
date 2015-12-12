@@ -11,7 +11,8 @@ public class Character2D : MonoBehaviour
     [SerializeField]
     private Transform groundCheck;    // A position marking where to check if the player is grounded.
     [SerializeField]
-    private Transform ceilingCheck;   // A position marking where to check for ceilings
+    private Transform firstBox;
+
 
     private Rigidbody2D rigidbody;
 
@@ -36,6 +37,22 @@ public class Character2D : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckLose();
+
+        CheckControls();
+    }
+
+    bool OnGround()
+    {
+        var colliderList = Physics2D.OverlapCircleAll(groundCheck.position, groundedRadius, whatIsGround);
+        foreach (var collider in colliderList)
+            if (collider.gameObject != gameObject) return true;
+
+        return false;
+    }
+
+    void CheckControls()
+    {
         var direction = 0f;
         var keyDown = false;
 
@@ -54,22 +71,15 @@ public class Character2D : MonoBehaviour
         if (!keyDown) return;
 
         if (Input.anyKeyDown && OnGround())
-        {
             rigidbody.AddForce(new Vector2(direction, jumpForce));
-        }
         else
-        {
-            Debug.LogFormat("AddForce {0} {1}", direction * Time.deltaTime, Time.deltaTime);
             rigidbody.AddForce(new Vector2(direction * Time.deltaTime, 0f));
-        }
     }
 
-    bool OnGround()
+    void CheckLose()
     {
-        var colliderList = Physics2D.OverlapCircleAll(groundCheck.position, groundedRadius, whatIsGround);
-        foreach (var collider in colliderList)
-            if (collider.gameObject != gameObject) return true;
+        if (transform.position.y > firstBox.transform.position.y) return;
 
-        return false;
+        Application.LoadLevel(Application.loadedLevel);
     }
 }
