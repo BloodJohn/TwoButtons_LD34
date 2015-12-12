@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Character2D : MonoBehaviour
 {
@@ -46,33 +47,43 @@ public class Character2D : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (state != GameState.play) return;
-
-        if (CheckLose())
+        switch (state)
         {
-            state = GameState.lose;
-            Application.LoadLevel(Application.loadedLevel);
-            return;
+            case GameState.lose: return;
+            case GameState.win:
+                if (Input.anyKeyDown) Application.LoadLevel(1);
+                return;
+
+            case GameState.play:
+            {
+                    if (CheckLose())
+                    {
+                        state = GameState.lose;
+                        Application.LoadLevel(Application.loadedLevel);
+                        return;
+                    }
+
+                    if (CheckWin())
+                    {
+                        state = GameState.win;
+                        Debug.Log("Deer is back to Santa");
+
+                        rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+                        return;
+                    }
+
+                    CheckControls();
+                }
+                break;
         }
-
-        if (CheckWin())
-        {
-            state = GameState.win;
-            Debug.Log("Deer is back to Santa");
-
-            rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
-            return;
-        }
-
-        CheckControls();
     }
 
-    bool CheckLose()
+    private bool CheckLose()
     {
         return (transform.position.y < firstBox.transform.position.y);
     }
 
-    bool CheckWin()
+    private bool CheckWin()
     {
         var colliderList = Physics2D.OverlapCircleAll(sleighPoint.position, groundedRadius, whatIsGround);
         foreach (var collider in colliderList)
@@ -82,7 +93,7 @@ public class Character2D : MonoBehaviour
         return false;
     }
 
-    void CheckControls()
+    private void CheckControls()
     {
         var direction = 0f;
         var keyDown = false;
@@ -104,10 +115,10 @@ public class Character2D : MonoBehaviour
         if (Input.anyKeyDown && OnGround())
             rigidbody.AddForce(new Vector2(direction, jumpForce));
         else
-            rigidbody.AddForce(new Vector2(direction * Time.deltaTime, 0f));
+            rigidbody.AddForce(new Vector2(direction*Time.deltaTime, 0f));
     }
 
-    bool OnGround()
+    private bool OnGround()
     {
         foreach (var transformCheck in groundCheck)
         {
