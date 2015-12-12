@@ -9,9 +9,11 @@ public class Character2D : MonoBehaviour
     [SerializeField]
     private LayerMask whatIsGround;                  // A mask determining what is ground to the character
     [SerializeField]
-    private Transform groundCheck;    // A position marking where to check if the player is grounded.
+    private Transform[] groundCheck;    // A position marking where to check if the player is grounded.
     [SerializeField]
     private Transform firstBox;
+    [SerializeField]
+    private Transform sleighPoint;
 
 
     private Rigidbody2D rigidbody;
@@ -19,8 +21,15 @@ public class Character2D : MonoBehaviour
     [SerializeField]
     private float groundedRadius; // Radius of the overlap circle to determine if grounded
 
-    
 
+    enum GameState
+    {
+        play,
+        lose,
+        win
+    }
+
+    private GameState state = GameState.play;
 
 
     void Awake()
@@ -37,16 +46,38 @@ public class Character2D : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckLose();
+        if (state != GameState.play) return;
+
+        if (CheckLose())
+        {
+            state = GameState.lose;
+            Application.LoadLevel(Application.loadedLevel);
+            return;
+        }
+
+        if (CheckWin())
+        {
+            state = GameState.win;
+            Debug.Log("Deer is back to Santa");
+
+            rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            return;
+        }
 
         CheckControls();
     }
 
-    bool OnGround()
+    bool CheckLose()
     {
-        var colliderList = Physics2D.OverlapCircleAll(groundCheck.position, groundedRadius, whatIsGround);
+        return (transform.position.y < firstBox.transform.position.y);
+    }
+
+    bool CheckWin()
+    {
+        var colliderList = Physics2D.OverlapCircleAll(sleighPoint.position, groundedRadius, whatIsGround);
         foreach (var collider in colliderList)
-            if (collider.gameObject != gameObject) return true;
+            if (collider.gameObject == gameObject)
+                return true;
 
         return false;
     }
@@ -76,10 +107,15 @@ public class Character2D : MonoBehaviour
             rigidbody.AddForce(new Vector2(direction * Time.deltaTime, 0f));
     }
 
-    void CheckLose()
+    bool OnGround()
     {
-        if (transform.position.y > firstBox.transform.position.y) return;
-
-        Application.LoadLevel(Application.loadedLevel);
+        foreach (var transformCheck in groundCheck)
+        {
+            var colliderList = Physics2D.OverlapCircleAll(transformCheck.position, groundedRadius, whatIsGround);
+            foreach (var collider in colliderList)
+                if (collider.gameObject != gameObject)
+                    return true;
+        }
+        return false;
     }
 }
