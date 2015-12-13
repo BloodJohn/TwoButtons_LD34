@@ -19,6 +19,8 @@ public class Character2D : MonoBehaviour
     [SerializeField]
     private GameObject tutorial;
 
+    [SerializeField] private AudioClip jumpSound;
+
 
     private Rigidbody2D rigidbody;
 
@@ -123,7 +125,10 @@ public class Character2D : MonoBehaviour
         if (!keyDown) return;
 
         if (Input.anyKeyDown && OnGround())
+        {
             rigidbody.AddForce(new Vector2(direction, jumpForce));
+            AudioSource.PlayClipAtPoint(jumpSound, transform.position);
+        }
         else
             rigidbody.AddForce(new Vector2(direction*Time.deltaTime, 0f));
     }
