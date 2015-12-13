@@ -16,6 +16,9 @@ public class Character2D : MonoBehaviour
     [SerializeField]
     private Transform sleighPoint;
 
+    [SerializeField]
+    private GameObject tutorial;
+
 
     private Rigidbody2D rigidbody;
 
@@ -80,7 +83,12 @@ public class Character2D : MonoBehaviour
 
     private bool CheckLose()
     {
-        return (transform.position.y < firstBox.transform.position.y);
+        if (transform.position.y < firstBox.transform.position.y) return true;
+
+        if (rigidbody.velocity.magnitude < 0.001f && (transform.rotation.z>0.5f || transform.rotation.z < -0.5f))
+            return true;
+
+        return false;
     }
 
     private bool CheckWin()
@@ -102,6 +110,8 @@ public class Character2D : MonoBehaviour
         {
             direction -= shiftForce;
             keyDown = true;
+
+            if (tutorial.activeSelf) tutorial.SetActive(false);
         }
 
         if (Input.GetKey(KeyCode.RightArrow))
