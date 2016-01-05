@@ -77,7 +77,7 @@ public class Character2D : MonoBehaviour
                     if (CheckWin())
                     {
                         state = GameState.win;
-                        Debug.Log("Deer is back to Santa");
+                        //Debug.Log("Deer is back to Santa");
 
                         rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
                         return;
@@ -111,25 +111,11 @@ public class Character2D : MonoBehaviour
 
     private void CheckControls()
     {
-        var direction = 0f;
-        var keyDown = false;
         var isGround = OnGround();
 
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            direction -= shiftForce;
-            keyDown = true;
+        var direction = GetKeyDirection(isGround);
 
-            if (tutorial.activeSelf) tutorial.SetActive(false);
-        }
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            direction += shiftForce;
-            keyDown = true;
-        }
-
-        if (!keyDown)
+        if (0f==direction)
         {
             direction = GetTouchDirection(isGround);
             if (0f == direction) return;
@@ -142,6 +128,28 @@ public class Character2D : MonoBehaviour
         }
         else
             rigidbody.AddForce(new Vector2(direction * Time.deltaTime, 0f));
+    }
+
+    private float GetKeyDirection(bool isGround)
+    {
+        if (!Input.anyKey) return 0f;
+        if (isGround && !Input.anyKeyDown) return 0f;
+
+        var direction = 0f;
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            direction -= shiftForce;
+
+            if (tutorial.activeSelf) tutorial.SetActive(false);
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            direction += shiftForce;
+        }
+
+        return direction;
     }
 
     private float GetTouchDirection(bool isGround)
