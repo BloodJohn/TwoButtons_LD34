@@ -61,7 +61,8 @@ public class Character2D : MonoBehaviour
         {
             case GameState.lose: return;
             case GameState.win:
-                if (Input.anyKeyDown) SceneManager.LoadScene(1);
+                int index = SceneManager.GetActiveScene().buildIndex;
+                if (Input.anyKeyDown) SceneManager.LoadScene(index+1);
                 else if (Input.touchCount > 0) SceneManager.LoadScene(0);
                 return;
 
@@ -77,7 +78,6 @@ public class Character2D : MonoBehaviour
                     if (CheckWin())
                     {
                         state = GameState.win;
-                        //Debug.Log("Deer is back to Santa");
 
                         rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
                         return;
@@ -186,8 +186,7 @@ public class Character2D : MonoBehaviour
         {
             direction += shiftForce;
         }
-
-        //Debug.LogFormat("direction {0}", direction);
+        
         return direction;
     }
 
