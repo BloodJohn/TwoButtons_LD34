@@ -187,7 +187,7 @@ public class Character2D : MonoBehaviour
             direction += shiftForce;
         }
 
-        Debug.LogFormat("direction {0}", direction);
+        //Debug.LogFormat("direction {0}", direction);
         return direction;
     }
 
