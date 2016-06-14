@@ -34,7 +34,8 @@ public class Character2D : MonoBehaviour
     {
         play,
         lose,
-        win
+        win,
+        touchwin
     }
 
     private GameState state = GameState.play;
@@ -60,6 +61,9 @@ public class Character2D : MonoBehaviour
         switch (state)
         {
             case GameState.lose: return;
+            case GameState.touchwin:
+                if (Input.GetMouseButtonUp(0)) state = GameState.win;
+                return;
             case GameState.win:
                 int index = SceneManager.GetActiveScene().buildIndex;
                 if (Input.anyKeyDown) SceneManager.LoadScene(index+1);
@@ -77,7 +81,7 @@ public class Character2D : MonoBehaviour
 
                     if (CheckWin())
                     {
-                        state = GameState.win;
+                        state = Input.GetMouseButton(0) ? GameState.touchwin : GameState.win;
 
                         rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
                         return;
