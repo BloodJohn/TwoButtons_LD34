@@ -38,7 +38,7 @@ public class Character2D : MonoBehaviour
         touchwin
     }
 
-    private GameState state = GameState.play;
+    private GameState _state = GameState.play;
 
 
     void Awake()
@@ -50,38 +50,35 @@ public class Character2D : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        #if UNITY_ANDROID && !UNITY_EDITOR
-        GoogleAnalyticsV3.instance.LogScreen("Level " + SceneManager.GetActiveScene().buildIndex);
-        #endif
     }
 
     // Update is called once per frame
     void Update()
     {
-        switch (state)
+        switch (_state)
         {
             case GameState.lose: return;
             case GameState.touchwin:
-                if (Input.GetMouseButtonUp(0)) state = GameState.win;
+                if (Input.GetMouseButtonUp(0)) _state = GameState.win;
                 return;
             case GameState.win:
-                int index = SceneManager.GetActiveScene().buildIndex;
+                var index = SceneManager.GetActiveScene().buildIndex;
                 if (Input.anyKeyDown) SceneManager.LoadScene(index+1);
-                else if (Input.touchCount > 0) SceneManager.LoadScene(0);
+                //else if (Input.touchCount > 0) SceneManager.LoadScene(0);
                 return;
 
             case GameState.play:
                 {
                     if (CheckLose())
                     {
-                        state = GameState.lose;
+                        _state = GameState.lose;
                         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                         return;
                     }
 
                     if (CheckWin())
                     {
-                        state = Input.GetMouseButton(0) ? GameState.touchwin : GameState.win;
+                        _state = Input.GetMouseButton(0) ? GameState.touchwin : GameState.win;
 
                         rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
                         return;
@@ -106,8 +103,8 @@ public class Character2D : MonoBehaviour
     private bool CheckWin()
     {
         var colliderList = Physics2D.OverlapCircleAll(sleighPoint.position, groundedRadius, whatIsGround);
-        foreach (var collider in colliderList)
-            if (collider.gameObject == gameObject)
+        foreach (var itemCheck in colliderList)
+            if (itemCheck.gameObject == gameObject)
                 return true;
 
         return false;
@@ -119,9 +116,11 @@ public class Character2D : MonoBehaviour
 
         var direction = GetKeyDirection(isGround);
 
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
         if (0f==direction)
         {
             direction = GetTouchDirection(isGround);
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (0f == direction) return;
         }
 
@@ -158,8 +157,8 @@ public class Character2D : MonoBehaviour
 
     private float GetTouchDirection(bool isGround)
     {
-        float xPos = 0f;
-        float direction = 0f;
+        var xPos = 0f;
+        var direction = 0f;
 
 
         if (isGround)
@@ -199,8 +198,8 @@ public class Character2D : MonoBehaviour
         foreach (var transformCheck in groundCheck)
         {
             var colliderList = Physics2D.OverlapCircleAll(transformCheck.position, groundedRadius, whatIsGround);
-            foreach (var collider in colliderList)
-                if (collider.gameObject != gameObject)
+            foreach (var checkItem in colliderList)
+                if (checkItem.gameObject != gameObject)
                     return true;
         }
         return false;

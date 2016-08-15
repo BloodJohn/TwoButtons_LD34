@@ -8,10 +8,6 @@ public class HappyEnd : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        #if UNITY_ANDROID && !UNITY_EDITOR
-        GoogleAnalyticsV3.instance.LogScreen("Level " + SceneManager.GetActiveScene().buildIndex);
-        #endif
-
         StartCoroutine(WaitAndRestart(1f));
     }
 
@@ -23,7 +19,7 @@ public class HappyEnd : MonoBehaviour
         {
             if (Input.anyKeyDown || Input.touchCount > 0)
             {
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(6);
                 yield break;
             }
             
