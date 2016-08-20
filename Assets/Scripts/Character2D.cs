@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
 
 public class Character2D : MonoBehaviour
@@ -25,6 +27,7 @@ public class Character2D : MonoBehaviour
 
     private Rigidbody2D rigidbody;
     private int halfWidth;
+    private int attempts = 1;
 
     [SerializeField]
     private float groundedRadius; // Radius of the overlap circle to determine if grounded
@@ -63,8 +66,15 @@ public class Character2D : MonoBehaviour
                 return;
             case GameState.win:
                 var index = SceneManager.GetActiveScene().buildIndex;
-                if (Input.anyKeyDown) SceneManager.LoadScene(index+1);
-                //else if (Input.touchCount > 0) SceneManager.LoadScene(0);
+                if (Input.anyKeyDown)
+                {
+                    Analytics.CustomEvent("level complete", new Dictionary<string, object>
+                      {
+                        { "level", index },
+                        { "attempts", attempts },
+                      });
+                    SceneManager.LoadScene(index + 1);
+                }
                 return;
 
             case GameState.play:
@@ -72,6 +82,7 @@ public class Character2D : MonoBehaviour
                     if (CheckLose())
                     {
                         _state = GameState.lose;
+                        attempts++;
                         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                         return;
                     }
@@ -112,12 +123,13 @@ public class Character2D : MonoBehaviour
 
     private void CheckControls()
     {
-        var isGround = OnGround();
+        if (Input.GetKeyUp(KeyCode.Escape)) Application.Quit();
 
+        var isGround = OnGround();
         var direction = GetKeyDirection(isGround);
 
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        if (0f==direction)
+        if (0f == direction)
         {
             direction = GetTouchDirection(isGround);
             // ReSharper disable once CompareOfFloatsByEqualityOperator
@@ -189,7 +201,7 @@ public class Character2D : MonoBehaviour
         {
             direction += shiftForce;
         }
-        
+
         return direction;
     }
 
