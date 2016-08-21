@@ -8,7 +8,7 @@ public class HappyEnd : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        StartCoroutine(WaitAndRestart(1f));
+        StartCoroutine(WaitAndRestart(0.5f));
     }
 
     IEnumerator WaitAndRestart(float waitTime)

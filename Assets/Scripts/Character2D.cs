@@ -22,12 +22,17 @@ public class Character2D : MonoBehaviour
     private GameObject tutorial;
 
     [SerializeField]
+    private TextMesh levelText;
+    [SerializeField]
+    private string levelName;
+
+    [SerializeField]
     private AudioClip jumpSound;
 
 
     private Rigidbody2D rigidbody;
     private int halfWidth;
-    private int attempts = 1;
+    private int attempts;
 
     [SerializeField]
     private float groundedRadius; // Radius of the overlap circle to determine if grounded
@@ -48,6 +53,9 @@ public class Character2D : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody2D>();
         halfWidth = Screen.width / 2;
+
+        attempts = PlayerPrefs.GetInt(levelName, 1);
+        levelText.text = string.Format("{0} level {1}", attempts, levelName);
     }
 
     // Use this for initialization
@@ -75,6 +83,7 @@ public class Character2D : MonoBehaviour
                       });
                     SceneManager.LoadScene(index + 1);
                 }
+                PlayerPrefs.DeleteKey(levelName);
                 return;
 
             case GameState.play:
@@ -83,6 +92,7 @@ public class Character2D : MonoBehaviour
                     {
                         _state = GameState.lose;
                         attempts++;
+                        PlayerPrefs.SetInt(levelName,attempts);
                         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                         return;
                     }
