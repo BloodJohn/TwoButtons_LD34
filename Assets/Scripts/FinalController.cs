@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
+using System.Collections;
 
-public class HappyEnd : MonoBehaviour
+public class FinalController : MonoBehaviour
 {
+    public string storeURL = "https://play.google.com/store/apps/details?id=com.StarAge.TwoJump";
+
     void Start()
     {
         StartCoroutine(WaitAndRestart(0.5f));
@@ -17,11 +18,12 @@ public class HappyEnd : MonoBehaviour
         {
             if (Input.anyKeyDown || Input.touchCount > 0)
             {
-                SceneManager.LoadScene(6);
+                Application.OpenURL(storeURL);
                 yield break;
             }
-            
+
             yield return new WaitForSeconds(0.1f);
         }
     }
+
 }
