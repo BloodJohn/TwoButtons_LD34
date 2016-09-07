@@ -17,6 +17,10 @@ public class AdsDialog : MonoBehaviour
             };
             Advertisement.Show(null, showOptions);
         }
+        else
+        {
+            LoadNextLevel();
+        }
     }
 
     private void HandleShowResult(ShowResult result)
