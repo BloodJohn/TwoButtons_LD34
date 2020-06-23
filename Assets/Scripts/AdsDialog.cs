@@ -7,41 +7,41 @@ public class AdsDialog : MonoBehaviour
 {
 
     /// <summary>Вызывается по кнопке startAds</summary>
-    public void ShowAd()
-    {
-        if (Advertisement.IsReady())
-        {
-            var showOptions = new ShowOptions
-            {
-                resultCallback = HandleShowResult
-            };
-            Advertisement.Show(null, showOptions);
-        }
-        else
-        {
-            LoadNextLevel();
-        }
-    }
+    //public void ShowAd()
+    //{
+    //    if (Advertisement.IsReady())
+    //    {
+    //        var showOptions = new ShowOptions
+    //        {
+    //            resultCallback = HandleShowResult
+    //        };
+    //        Advertisement.Show(null, showOptions);
+    //    }
+    //    else
+    //    {
+    //        LoadNextLevel();
+    //    }
+    //}
 
-    private void HandleShowResult(ShowResult result)
-    {
-        switch (result)
-        {
-            case ShowResult.Finished:
-                Debug.Log("The ad was successfully shown.");
-                LoadNextLevel();
-                break;
+    //private void HandleShowResult(ShowResult result)
+    //{
+    //    switch (result)
+    //    {
+    //        case ShowResult.Finished:
+    //            Debug.Log("The ad was successfully shown.");
+    //            LoadNextLevel();
+    //            break;
 
-            case ShowResult.Skipped:
-                Debug.Log("The ad was skipped before reaching the end.");
-                LoadNextLevel();
-                break;
+    //        case ShowResult.Skipped:
+    //            Debug.Log("The ad was skipped before reaching the end.");
+    //            LoadNextLevel();
+    //            break;
 
-            case ShowResult.Failed:
-                Debug.LogError("The ad failed to be shown.");
-                break;
-        }
-    }
+    //        case ShowResult.Failed:
+    //            Debug.LogError("The ad failed to be shown.");
+    //            break;
+    //    }
+    //}
 
     public void LoadNextLevel()
     {
