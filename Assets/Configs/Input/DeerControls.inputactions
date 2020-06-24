@@ -1,1 +1,33 @@
-﻿{}
+{
+    "name": "DeerControls",
+    "maps": [
+        {
+            "name": "DefaultInput",
+            "id": "803d7257-4c63-40ed-a710-833a2354e392",
+            "actions": [
+                {
+                    "name": "LeftButton",
+                    "type": "Button",
+                    "id": "96b82b3d-7906-4b01-b576-7c4c72a8c164",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ec98063d-6b6a-470a-bc2b-6a84b7a64f99",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
